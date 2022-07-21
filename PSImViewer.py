@@ -51,13 +51,12 @@ class ImageView(object):
             colors[i,2] = 255-i
         cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 256), color=colors)
         self.imv.setColorMap(cmap)
-        self.imv.ui.roiBtn.setChecked(True)
+        self.imv.ui.roiBtn.setChecked(False)
         self.imv.roiClicked()
         self.imv.setImage(np.zeros((32,32)))
 
     def updateimg(self,d):
         self.imv.setImage(d)
-
 
 class MainWindow(uiclass, baseclass):
     def __init__(self):
@@ -83,12 +82,19 @@ class MainWindow(uiclass, baseclass):
     def next(self):
         self.pff.readimg()
         self.showimg()
+        self.showmetadata()
     
     def previous(self):
         pass
 
     def showmetadata(self):
-        pass
+        for i in range(0,4):
+            quabo = 'quabo_' + str(i)
+            for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
+                var = 'Q' + str(i) + '_' + metadata
+                self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
+            
+
 
         
 def main():
