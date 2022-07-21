@@ -43,7 +43,7 @@
      <rect>
       <x>80</x>
       <y>10</y>
-      <width>601</width>
+      <width>791</width>
       <height>17</height>
      </rect>
     </property>
@@ -676,8 +676,8 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen_2"/>
-    <addaction name="actionExit_2"/>
+    <addaction name="SelectFileAction"/>
+    <addaction name="ExitAction"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -691,12 +691,12 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionOpen_2">
+  <action name="SelectFileAction">
    <property name="text">
     <string>Open</string>
    </property>
   </action>
-  <action name="actionExit_2">
+  <action name="ExitAction">
    <property name="text">
     <string>Exit</string>
    </property>

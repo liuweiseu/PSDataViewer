@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtWidgets
 import pyqtgraph as pg
 import numpy as np
 import pff, json
@@ -64,17 +65,16 @@ class MainWindow(uiclass, baseclass):
         self.setupUi(self)
         self.win = ImageView()
         self.verticalLayout.addWidget(self.win.imv)
-        self.filename = 'start_2022-07-20T06:20:58Z.dp_img16.bpp_2.dome_0.module_1.seqno_0.pff'
-        self.pff = PFFfile(self.filename)
-        self.pff.openpff()
-        self.pff.readimg()
-        #self.pff.closepff()
-        self.showimg()
+        self.filename = 'None'
+        self.pff = 0
         self.FileNameLabel.setText(self.filename)
+
         # connect click operations to functions
         self.NextButton.clicked.connect(lambda:self.next())
         self.PreviousButton.clicked.connect(lambda:self.previous())
-
+        self.SelectFileAction.triggered.connect(lambda:self.openfile())
+        self.ExitAction.triggered.connect(lambda:self.exit())
+    
     # connected functions
     def showimg(self):
         self.win.updateimg(self.pff.data)
@@ -93,10 +93,21 @@ class MainWindow(uiclass, baseclass):
             for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
                 var = 'Q' + str(i) + '_' + metadata
                 self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
-            
+    
+    def openfile(self):
+        directory = QtWidgets.QFileDialog.getOpenFileName(self,  "Select","./", "All Files (*);;Text Files (*.pff)") 
+        self.filename = directory[0]
+        self.pff = PFFfile(self.filename)
+        self.pff.openpff()
+        self.pff.readimg()
+        self.showmetadata()
+        self.showimg()
+        self.FileNameLabel.setText(self.filename)
+    
+    def exit(self):
+        self.pff.closepff()    
+        self.close()
 
-
-        
 def main():
     app = QApplication(sys.argv)
     w = MainWindow()
