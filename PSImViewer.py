@@ -26,6 +26,7 @@ class PFFfile(object):
         self.fhandle = 0
         self.metadata = []
         self.data = []
+        self.pktsize = 0
 
     def openpff(self):
         self.fhandle = open(self.filename, 'rb')
@@ -34,12 +35,28 @@ class PFFfile(object):
         self.fhandle.close()
 
     def readimg(self):
+        self.metadata = []
+        self.data = []
+        try:
+            tmp = pff.read_json(self.fhandle)
+            self.metadata = json.loads(tmp)
+            rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+            self.pktsize = len(tmp) + len(rawdata)*2 + 2
+            self.data = np.array(rawdata,dtype=float).reshape(32,32)
+        except:
+            return
+    
+    def readpreimg(self):
+        self.metadata = []
+        self.data = []
+        try:
+            self.fhandle.seek(-2*self.pktsize,1)
+        except:
+            return
         tmp = pff.read_json(self.fhandle)
         self.metadata = json.loads(tmp)
         self.rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
         self.data = np.array(self.rawdata,dtype=float).reshape(32,32)
-    
-
 
 ## ImageVew class
 class ImageView(object):
@@ -81,11 +98,19 @@ class MainWindow(uiclass, baseclass):
 
     def next(self):
         self.pff.readimg()
-        self.showimg()
-        self.showmetadata()
+        if(len(self.pff.metadata) == 0):
+            QtWidgets.QMessageBox.warning(self,'Warning','This is the last image!')
+        else:
+            self.showimg()
+            self.showmetadata()
     
     def previous(self):
-        pass
+        self.pff.readpreimg()
+        if(len(self.pff.metadata) == 0):
+            QtWidgets.QMessageBox.warning(self,'Warning','This is the first image!')
+        else:
+            self.showimg()
+            self.showmetadata()
 
     def showmetadata(self):
         for i in range(0,4):
