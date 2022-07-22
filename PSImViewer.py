@@ -26,7 +26,7 @@ class PFFfile(object):
         self.fhandle = 0
         self.metadata = []
         self.data = []
-        self.pktsize = 0
+        self.pktsize = []
 
     def openpff(self):
         self.fhandle = open(self.filename, 'rb')
@@ -38,11 +38,12 @@ class PFFfile(object):
         self.metadata = []
         self.data = []
         try:
-            tmp = pff.read_json(self.fhandle)
-            self.metadata = json.loads(tmp)
+            metadata = pff.read_json(self.fhandle)
+            self.metadata = json.loads(metadata)
             rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
-            self.pktsize = len(tmp) + len(rawdata)*2 + 2
-            self.data = np.array(rawdata,dtype=float).reshape(32,32)
+            pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
+            self.pktsize.append(pktsize)
+            self.data = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
         except:
             return
     
@@ -50,13 +51,14 @@ class PFFfile(object):
         self.metadata = []
         self.data = []
         try:
-            self.fhandle.seek(-2*self.pktsize,1)
+            self.fhandle.seek(-1*(self.pktsize[-1] + self.pktsize[-2]),1)
+            self.pktsize.pop()
         except:
             return
-        tmp = pff.read_json(self.fhandle)
-        self.metadata = json.loads(tmp)
-        self.rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
-        self.data = np.array(self.rawdata,dtype=float).reshape(32,32)
+        metadata = pff.read_json(self.fhandle)
+        self.metadata = json.loads(metadata)
+        rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+        self.data = np.array(rawdata,dtype=float).reshape(self.image_size, self.image_size)
 
 ## ImageVew class
 class ImageView(object):
@@ -90,7 +92,6 @@ class MainWindow(uiclass, baseclass):
         self.NextButton.clicked.connect(lambda:self.next())
         self.PreviousButton.clicked.connect(lambda:self.previous())
         self.SelectFileAction.triggered.connect(lambda:self.openfile())
-        self.ExitAction.triggered.connect(lambda:self.exit())
     
     # connected functions
     def showimg(self):
@@ -113,11 +114,24 @@ class MainWindow(uiclass, baseclass):
             self.showmetadata()
 
     def showmetadata(self):
+        # metadata in im packets and ph packets are different
         for i in range(0,4):
-            quabo = 'quabo_' + str(i)
+            group_id = 'Quabo'+str(i)+'metadata'
+            self.__dict__[group_id].setStyleSheet('QGroupBox:title {color: rgb(0, 0, 0);}')
+        if(self.pff.is_ph==False):
+            for i in range(0,4):
+                quabo = 'quabo_' + str(i)
+                for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
+                    var = 'Q' + str(i) + '_' + metadata
+                    self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
+        else:
+            quabo_id = self.pff.metadata['quabo_num']
+            group_id = 'Quabo'+str(quabo_id)+'metadata'
+            self.__dict__[group_id].setStyleSheet('QGroupBox:title {color: rgb(255, 0, 255);}')
+            quabo = 'quabo_' + str(quabo_id)
             for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
-                var = 'Q' + str(i) + '_' + metadata
-                self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
+                    var = 'Q' + str(quabo_id) + '_' + metadata
+                    self.__dict__[var].setText(str(self.pff.metadata[metadata]))
     
     def openfile(self):
         directory = QtWidgets.QFileDialog.getOpenFileName(self,  "Select","./", "All Files (*);;Text Files (*.pff)") 
@@ -128,10 +142,6 @@ class MainWindow(uiclass, baseclass):
         self.showmetadata()
         self.showimg()
         self.FileNameLabel.setText(self.filename)
-    
-    def exit(self):
-        self.pff.closepff()    
-        self.close()
 
 def main():
     app = QApplication(sys.argv)

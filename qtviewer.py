@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
         self.label0.setGeometry(QtCore.QRect(10, 10, 67, 17))
         self.label0.setObjectName("label0")
         self.FileNameLabel = QtWidgets.QLabel(self.centralwidget)
-        self.FileNameLabel.setGeometry(QtCore.QRect(80, 10, 601, 17))
+        self.FileNameLabel.setGeometry(QtCore.QRect(80, 10, 791, 17))
         self.FileNameLabel.setObjectName("FileNameLabel")
         self.splitter = QtWidgets.QSplitter(self.centralwidget)
         self.splitter.setGeometry(QtCore.QRect(700, 600, 160, 31))
@@ -183,12 +183,11 @@ class Ui_MainWindow(object):
         self.actionOpen.setObjectName("actionOpen")
         self.actionExit = QtWidgets.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
-        self.openfile = QtWidgets.QAction(MainWindow)
-        self.openfile.setObjectName("openfile")
-        self.actionExit_2 = QtWidgets.QAction(MainWindow)
-        self.actionExit_2.setObjectName("actionExit_2")
-        self.menuFile.addAction(self.openfile)
-        self.menuFile.addAction(self.actionExit_2)
+        self.SelectFileAction = QtWidgets.QAction(MainWindow)
+        self.SelectFileAction.setObjectName("SelectFileAction")
+        self.ExitAction = QtWidgets.QAction(MainWindow)
+        self.ExitAction.setObjectName("ExitAction")
+        self.menuFile.addAction(self.SelectFileAction)
         self.menuBar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -196,7 +195,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "PANOSETI Data Viewer"))
         self.label0.setText(_translate("MainWindow", "Filename:"))
         self.FileNameLabel.setText(_translate("MainWindow", "test.pff"))
         self.PreviousButton.setText(_translate("MainWindow", "Previous"))
@@ -249,8 +248,8 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
-        self.openfile.setText(_translate("MainWindow", "Open"))
-        self.actionExit_2.setText(_translate("MainWindow", "Exit"))
+        self.SelectFileAction.setText(_translate("MainWindow", "Open"))
+        self.ExitAction.setText(_translate("MainWindow", "Exit"))
 
 
 if __name__ == "__main__":

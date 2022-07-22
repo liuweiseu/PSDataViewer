@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PANOSETI Im Viewer</string>
+   <string>PANOSETI Data Viewer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
@@ -677,7 +677,6 @@
      <string>File</string>
     </property>
     <addaction name="SelectFileAction"/>
-    <addaction name="ExitAction"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
