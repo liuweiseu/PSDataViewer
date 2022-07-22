@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets
 import pyqtgraph as pg
 import numpy as np
 import pff, json
-
+import datetime
 uiclass, baseclass = pg.Qt.loadUiType("qtviewer.ui")
 
 ## pff file class
@@ -132,6 +132,8 @@ class MainWindow(uiclass, baseclass):
             for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
                     var = 'Q' + str(quabo_id) + '_' + metadata
                     self.__dict__[var].setText(str(self.pff.metadata[metadata]))
+        # to-do: add time convertion code
+        # datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     
     def openfile(self):
         directory = QtWidgets.QFileDialog.getOpenFileName(self,  "Select","./", "All Files (*);;Text Files (*.pff)") 
