@@ -1,11 +1,13 @@
-import sys
+import sys,os
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtWidgets
 import pyqtgraph as pg
 import numpy as np
 import pff, json
 import datetime
-uiclass, baseclass = pg.Qt.loadUiType("qtviewer.ui")
+
+cur_path = os.path.dirname(os.path.abspath(__file__))
+uiclass, baseclass = pg.Qt.loadUiType(cur_path + "/qtviewer.ui")
 
 ## pff file class
 class PFFfile(object):
@@ -34,6 +36,7 @@ class PFFfile(object):
     def closepff(self):
         self.fhandle.close()
 
+    # to-do: when reading ph packets, we need to show a 32x32 image
     def readimg(self):
         self.metadata = []
         self.data = []

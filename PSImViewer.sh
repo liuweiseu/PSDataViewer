@@ -4,4 +4,5 @@
 source ~/Software/anaconda3/bin/activate
 conda activate panoseti
 
-python PSImViewer.py
+cur_path=/home/wei/Projects/Panoseti/panoseti_data/PSImViewer
+python $cur_path/PSImViewer.py
