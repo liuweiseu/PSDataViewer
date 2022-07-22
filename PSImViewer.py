@@ -29,6 +29,7 @@ class PFFfile(object):
         self.metadata = []
         self.data = []
         self.pktsize = []
+        self.phdata = [0 for i in range(32*32)]
 
     def openpff(self):
         self.fhandle = open(self.filename, 'rb')
@@ -40,15 +41,32 @@ class PFFfile(object):
     def readimg(self):
         self.metadata = []
         self.data = []
-        try:
-            metadata = pff.read_json(self.fhandle)
-            self.metadata = json.loads(metadata)
-            rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
-            pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
-            self.pktsize.append(pktsize)
-            self.data = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
-        except:
-            return
+        # reading data from im and ph file is different
+        if(self.is_ph==False):
+            try:
+                metadata = pff.read_json(self.fhandle)
+                self.metadata = json.loads(metadata)
+                rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+                pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
+                self.pktsize.append(pktsize)
+                self.data = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
+            except:
+                return
+        else:
+            try:
+                metadata = pff.read_json(self.fhandle)
+                self.metadata = json.loads(metadata)
+                q_rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+                quabo_id = self.metadata['quabo_num']
+                self.phdata[quabo_id *16*16:(quabo_id+1)*16*16] = list(q_rawdata)
+                rawdata = self.phdata
+                print(rawdata)
+                pktsize = len(metadata) + len(q_rawdata)*self.bytes_per_pixel + 2
+                self.pktsize.append(pktsize)
+                self.data = np.array(rawdata,dtype=float).reshape(32,32)
+            except:
+                return
+
     
     def readpreimg(self):
         self.metadata = []
