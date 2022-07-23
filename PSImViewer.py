@@ -8,20 +8,24 @@ import datetime
 
 cur_path = os.path.dirname(os.path.abspath(__file__))
 uiclass, baseclass = pg.Qt.loadUiType(cur_path + "/qtviewer.ui")
-
+             
 def _cp_img(id,im0,im1):
     if(id == 0):
         sx = 0
         sy = 0
+        im0 = np.rot90(im0,-1)
     elif(id == 1):
         sx = 16
         sy = 0
+        im0 = np.rot90(im0,-2)
     elif(id == 3):
         sx = 0
-        sy = 16
+        sy = 16 
     elif(id == 2):
         sx = 16
         sy = 16
+        im0 = np.rot90(im0,-3)
+    
     for i in range(16):
         for j in range(16):
             im1[sx+i,sy+j] = im0[i,j]
@@ -91,10 +95,19 @@ class PFFfile(object):
             self.pktsize.pop()
         except:
             return
-        metadata = pff.read_json(self.fhandle)
-        self.metadata = json.loads(metadata)
-        rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
-        self.data = np.array(rawdata,dtype=float).reshape(self.image_size, self.image_size)
+        if(self.is_ph == False):
+            metadata = pff.read_json(self.fhandle)
+            self.metadata = json.loads(metadata)
+            rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+            self.data = np.array(rawdata,dtype=float).reshape(self.image_size, self.image_size)
+        else:
+            metadata = pff.read_json(self.fhandle)
+            self.metadata = json.loads(metadata)
+            rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+            tmp = np.array(rawdata,dtype=float).reshape(16,16)
+            quabo_id = self.metadata['quabo_num']
+            _cp_img(quabo_id, tmp, self.phdata)
+            self.data = self.phdata
 
 ## ImageVew class
 class ImageView(object):
