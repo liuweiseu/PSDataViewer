@@ -9,6 +9,22 @@ import datetime
 cur_path = os.path.dirname(os.path.abspath(__file__))
 uiclass, baseclass = pg.Qt.loadUiType(cur_path + "/qtviewer.ui")
 
+def _cp_img(id,im0,im1):
+    if(id == 0):
+        sx = 0
+        sy = 0
+    elif(id == 1):
+        sx = 16
+        sy = 0
+    elif(id == 3):
+        sx = 0
+        sy = 16
+    elif(id == 2):
+        sx = 16
+        sy = 16
+    for i in range(16):
+        for j in range(16):
+            im1[sx+i,sy+j] = im0[i,j]
 ## pff file class
 class PFFfile(object):
     def __init__(self, filename):
@@ -29,7 +45,7 @@ class PFFfile(object):
         self.metadata = []
         self.data = []
         self.pktsize = []
-        self.phdata = [0 for i in range(32*32)]
+        self.phdata = np.zeros((32,32),dtype=float)
 
     def openpff(self):
         self.fhandle = open(self.filename, 'rb')
@@ -56,14 +72,13 @@ class PFFfile(object):
             try:
                 metadata = pff.read_json(self.fhandle)
                 self.metadata = json.loads(metadata)
-                q_rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+                rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+                tmp = np.array(rawdata,dtype=float).reshape(16,16)
                 quabo_id = self.metadata['quabo_num']
-                self.phdata[quabo_id *16*16:(quabo_id+1)*16*16] = list(q_rawdata)
-                rawdata = self.phdata
-                print(rawdata)
-                pktsize = len(metadata) + len(q_rawdata)*self.bytes_per_pixel + 2
+                _cp_img(quabo_id, tmp, self.phdata)
+                pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
                 self.pktsize.append(pktsize)
-                self.data = np.array(rawdata,dtype=float).reshape(32,32)
+                self.data = self.phdata
             except:
                 return
 
