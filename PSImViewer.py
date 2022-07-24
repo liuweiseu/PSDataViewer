@@ -29,6 +29,16 @@ def _cp_img(id,im0,im1):
     for i in range(16):
         for j in range(16):
             im1[sx+i,sy+j] = im0[i,j]
+
+# tv_sec is the linux time, pkt_utc and pkt_nsec is from WR
+def _caldate(tv_sec,pkt_utc,pkt_nsec):
+    lo_t = datetime.datetime.fromtimestamp(tv_sec).strftime('%Y-%m-%d %H:%M:%S')
+    sec = (tv_sec & 0xFFFFFFFFFFFFFFC0) + pkt_utc
+    wr_t = datetime.datetime.fromtimestamp(sec).strftime('%Y-%m-%d %H:%M:%S')
+    #print('Linux time: ', lo_t)
+    #print('WR time   : ', wr_t)
+    return lo_t, wr_t
+
 ## pff file class
 class PFFfile(object):
     def __init__(self, filename):
@@ -120,7 +130,8 @@ class ImageView(object):
             colors[i,2] = 255-i
         cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 256), color=colors)
         self.imv.setColorMap(cmap)
-        self.imv.ui.roiBtn.setChecked(False)
+        self.imv.ui.roiBtn.setChecked(True)
+        self.imv.ui.roiPlot.showGrid(x=True, y=True, alpha=0.5)
         self.imv.roiClicked()
         self.imv.setImage(np.zeros((32,32)))
 
@@ -141,7 +152,7 @@ class MainWindow(uiclass, baseclass):
         self.NextButton.clicked.connect(lambda:self.next())
         self.PreviousButton.clicked.connect(lambda:self.previous())
         self.SelectFileAction.triggered.connect(lambda:self.openfile())
-    
+
     # connected functions
     def showimg(self):
         self.win.updateimg(self.pff.data)
@@ -173,6 +184,17 @@ class MainWindow(uiclass, baseclass):
                 for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
                     var = 'Q' + str(i) + '_' + metadata
                     self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
+                tv_sec = self.pff.metadata[quabo]['tv_sec']
+                pkt_utc = self.pff.metadata[quabo]['pkt_utc']
+                pkt_nsec = self.pff.metadata[quabo]['pkt_nsec']
+                if(tv_sec != 0):
+                    [lo_t, wr_t] = _caldate(tv_sec, pkt_utc, pkt_nsec)
+                    var = var = 'Q' + str(i) + '_' + 'lo_time'
+                    self.__dict__[var].setText(lo_t.split(' ')[1])
+                    var = var = 'Q' + str(i) + '_' + 'wr_time'
+                    self.__dict__[var].setText(wr_t.split(' ')[1])
+                    # lo_t.split(' ')[0] is the date, which should be the same as wr_t.split(' ')[0]
+                    self.Q_date.setText(lo_t.split(' ')[0])
         else:
             quabo_id = self.pff.metadata['quabo_num']
             group_id = 'Quabo'+str(quabo_id)+'metadata'
@@ -181,6 +203,17 @@ class MainWindow(uiclass, baseclass):
             for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
                     var = 'Q' + str(quabo_id) + '_' + metadata
                     self.__dict__[var].setText(str(self.pff.metadata[metadata]))
+            tv_sec = self.pff.metadata['tv_sec']
+            pkt_utc = self.pff.metadata['pkt_utc']
+            pkt_nsec = self.pff.metadata['pkt_nsec']
+            if(tv_sec != 0):
+                    [lo_t, wr_t] = _caldate(tv_sec, pkt_utc, pkt_nsec)
+                    var = var = 'Q' + str(quabo_id) + '_' + 'lo_time'
+                    self.__dict__[var].setText(lo_t.split(' ')[1])
+                    var = var = 'Q' + str(quabo_id) + '_' + 'wr_time'
+                    self.__dict__[var].setText(wr_t.split(' ')[1])
+                    # lo_t.split(' ')[0] is the date, which should be the same as wr_t.split(' ')[0]
+                    self.Q_date.setText(lo_t.split(' ')[0])
         # to-do: add time convertion code
         # datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     
@@ -192,7 +225,8 @@ class MainWindow(uiclass, baseclass):
         self.pff.readimg()
         self.showmetadata()
         self.showimg()
-        self.FileNameLabel.setText(self.filename)
+        print(self.filename.split('/'))
+        self.FileNameLabel.setText(self.filename.split('/')[-1])
 
 def main():
     app = QApplication(sys.argv)

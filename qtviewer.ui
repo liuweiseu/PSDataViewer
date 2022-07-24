@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>876</width>
-    <height>658</height>
+    <width>909</width>
+    <height>833</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>PANOSETI Data Viewer</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="figures/panoseti.ico"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
@@ -19,8 +22,8 @@
      <rect>
       <x>10</x>
       <y>40</y>
-      <width>661</width>
-      <height>591</height>
+      <width>671</width>
+      <height>761</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout"/>
@@ -41,9 +44,9 @@
    <widget class="QLabel" name="FileNameLabel">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>120</x>
       <y>10</y>
-      <width>791</width>
+      <width>761</width>
       <height>17</height>
      </rect>
     </property>
@@ -54,8 +57,8 @@
    <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>600</y>
+      <x>710</x>
+      <y>770</y>
       <width>160</width>
       <height>31</height>
      </rect>
@@ -77,11 +80,19 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>690</x>
       <y>40</y>
-      <width>191</width>
-      <height>551</height>
+      <width>211</width>
+      <height>711</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+     </font>
     </property>
     <property name="title">
      <string>Metadata</string>
@@ -94,8 +105,8 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>171</width>
-       <height>121</height>
+       <width>191</width>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -231,14 +242,66 @@
        <string>0</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>lo_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>wr_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q0_lo_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>120</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q0_wr_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>140</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="Quabo1metadata">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
-       <width>171</width>
-       <height>121</height>
+       <y>200</y>
+       <width>191</width>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -374,14 +437,66 @@
        <string>0</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_14">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>wr_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_13">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>lo_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q1_lo_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>120</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q1_wr_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>140</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="Quabo2metadata">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>290</y>
-       <width>171</width>
-       <height>121</height>
+       <y>370</y>
+       <width>191</width>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -517,14 +632,66 @@
        <string>0</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>wr_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_15">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>lo_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q2_wr_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>140</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q2_lo_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>120</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="Quabo3metadata">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>420</y>
-       <width>171</width>
-       <height>121</height>
+       <y>540</y>
+       <width>191</width>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -660,6 +827,71 @@
        <string>0</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_18">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>wr_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_17">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>lo_time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q3_wr_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>140</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Q3_lo_time">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>120</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="Q_date">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>0</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1969-07-01</string>
+     </property>
     </widget>
    </widget>
   </widget>
@@ -668,7 +900,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>876</width>
+     <width>909</width>
      <height>22</height>
     </rect>
    </property>
