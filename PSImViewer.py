@@ -225,7 +225,6 @@ class MainWindow(uiclass, baseclass):
         self.pff.readimg()
         self.showmetadata()
         self.showimg()
-        print(self.filename.split('/'))
         self.FileNameLabel.setText(self.filename.split('/')[-1])
 
 def main():
