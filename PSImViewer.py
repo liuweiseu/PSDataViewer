@@ -45,14 +45,18 @@ class PFFfile(object):
         self.filename = filename
         dict = pff.parse_name(self.filename)
         self.dp = dict['dp']
-        if self.dp == 'img16' or self.dp=='1':
+        if self.dp == 'img16' or self.dp =='1':
             self.image_size = 32
             self.bytes_per_pixel = 2
             self.is_ph = False
-        elif self.dp == 'ph16' or self.dp=='3':
+        elif self.dp == 'ph16' or self.dp =='3':
             self.image_size = 16
             self.bytes_per_pixel = 2
             self.is_ph = True
+        elif self.dp == 'img8' or self.dp == '2':
+            self.image_size = 32
+            self.bytes_per_pixel = 1
+            self.is_ph =False
         else:
             raise Exception("bad data product %s"%self.dp)
         self.fhandle = 0
@@ -87,7 +91,7 @@ class PFFfile(object):
                 metadata = pff.read_json(self.fhandle)
                 self.metadata = json.loads(metadata)
                 rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
-                tmp = np.array(rawdata,dtype=float).reshape(16,16)
+                tmp = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
                 quabo_id = self.metadata['quabo_num']
                 _cp_img(quabo_id, tmp, self.phdata)
                 pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
