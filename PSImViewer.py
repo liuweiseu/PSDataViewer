@@ -33,7 +33,7 @@ def _cp_img(id,im0,im1):
 # tv_sec is the linux time, pkt_utc and pkt_nsec is from WR
 def _caldate(tv_sec,pkt_utc,pkt_nsec):
     lo_t = datetime.datetime.fromtimestamp(tv_sec).strftime('%Y-%m-%d %H:%M:%S')
-    sec = (tv_sec & 0xFFFFFFFFFFFFFFC0) + pkt_utc
+    sec = (tv_sec & 0xFFFFFFFFFFFFFC00) + pkt_utc
     wr_t = datetime.datetime.fromtimestamp(sec).strftime('%Y-%m-%d %H:%M:%S')
     #print('Linux time: ', lo_t)
     #print('WR time   : ', wr_t)
@@ -184,7 +184,7 @@ class MainWindow(uiclass, baseclass):
                 for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
                     var = 'Q' + str(i) + '_' + metadata
                     self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
-                tv_sec = self.pff.metadata[quabo]['tv_sec']
+                tv_sec = self.pff.metadata[quabo]['tv_sec'] + 37
                 pkt_utc = self.pff.metadata[quabo]['pkt_utc']
                 pkt_nsec = self.pff.metadata[quabo]['pkt_nsec']
                 if(tv_sec != 0):
@@ -203,7 +203,7 @@ class MainWindow(uiclass, baseclass):
             for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
                     var = 'Q' + str(quabo_id) + '_' + metadata
                     self.__dict__[var].setText(str(self.pff.metadata[metadata]))
-            tv_sec = self.pff.metadata['tv_sec']
+            tv_sec = self.pff.metadata['tv_sec'] + 37
             pkt_utc = self.pff.metadata['pkt_utc']
             pkt_nsec = self.pff.metadata['pkt_nsec']
             if(tv_sec != 0):
@@ -214,8 +214,6 @@ class MainWindow(uiclass, baseclass):
                     self.__dict__[var].setText(wr_t.split(' ')[1])
                     # lo_t.split(' ')[0] is the date, which should be the same as wr_t.split(' ')[0]
                     self.Q_date.setText(lo_t.split(' ')[0])
-        # to-do: add time convertion code
-        # datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     
     def openfile(self):
         directory = QtWidgets.QFileDialog.getOpenFileName(self,  "Select","./", "All Files (*);;Text Files (*.pff)") 
