@@ -84,6 +84,7 @@ class PFFfile(object):
                 pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
                 self.pktsize.append(pktsize)
                 self.data = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
+                self.data = np.transpose(self.data)
             except:
                 return
         else:
@@ -92,6 +93,7 @@ class PFFfile(object):
                 self.metadata = json.loads(metadata)
                 rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
                 tmp = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
+                tmp = np.transpose(tmp)
                 quabo_id = self.metadata['quabo_num']
                 _cp_img(quabo_id, tmp, self.phdata)
                 pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
@@ -114,11 +116,13 @@ class PFFfile(object):
             self.metadata = json.loads(metadata)
             rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
             self.data = np.array(rawdata,dtype=float).reshape(self.image_size, self.image_size)
+            self.data = np.transpose(self.data)
         else:
             metadata = pff.read_json(self.fhandle)
             self.metadata = json.loads(metadata)
             rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
             tmp = np.array(rawdata,dtype=float).reshape(16,16)
+            tmp = np.transpose(tmp)
             quabo_id = self.metadata['quabo_num']
             _cp_img(quabo_id, tmp, self.phdata)
             self.data = self.phdata
