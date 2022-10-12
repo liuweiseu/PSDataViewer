@@ -40,7 +40,7 @@ def read_image(f, img_size, bytes_per_pixel):
         if bytes_per_pixel == 2:
             return struct.unpack("1024H", f.read(2048))
         elif bytes_per_pixel == 1:
-            return struct.unpack("1024b", f.read(1024))
+            return struct.unpack("1024B", f.read(1024))
         else:
             raise Exception("bad bytes per pixel"%bytes_per_pixel)
     elif img_size == 16:
