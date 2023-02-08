@@ -116,7 +116,7 @@ class PFFfile(object):
             self.pktsize.pop()
         except:
             return
-        if(self.is_ph == False):
+        if(self.is_ph == False or self.image_size==32):
             metadata = pff.read_json(self.fhandle)
             self.metadata = json.loads(metadata)
             rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
