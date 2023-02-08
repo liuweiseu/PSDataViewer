@@ -161,7 +161,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>pkt_utc:</string>
+       <string>pkt_tai:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_5">
@@ -216,7 +216,7 @@
        <string>0</string>
       </property>
      </widget>
-     <widget class="QLabel" name="Q0_pkt_utc">
+     <widget class="QLabel" name="Q0_pkt_tai">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -356,7 +356,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>pkt_utc:</string>
+       <string>pkt_tai:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_10">
@@ -411,7 +411,7 @@
        <string>0</string>
       </property>
      </widget>
-     <widget class="QLabel" name="Q1_pkt_utc">
+     <widget class="QLabel" name="Q1_pkt_tai">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -551,7 +551,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>pkt_utc:</string>
+       <string>pkt_tai:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_23">
@@ -606,7 +606,7 @@
        <string>0</string>
       </property>
      </widget>
-     <widget class="QLabel" name="Q2_pkt_utc">
+     <widget class="QLabel" name="Q2_pkt_tai">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -746,7 +746,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>pkt_utc:</string>
+       <string>pkt_tai:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_29">
@@ -801,7 +801,7 @@
        <string>0</string>
       </property>
      </widget>
-     <widget class="QLabel" name="Q3_pkt_utc">
+     <widget class="QLabel" name="Q3_pkt_tai">
       <property name="geometry">
        <rect>
         <x>90</x>

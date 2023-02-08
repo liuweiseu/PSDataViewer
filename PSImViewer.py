@@ -30,10 +30,10 @@ def _cp_img(id,im0,im1):
         for j in range(16):
             im1[sx+i,sy+j] = im0[i,j]
 
-# tv_sec is the linux time, pkt_utc and pkt_nsec is from WR
-def _caldate(tv_sec,pkt_utc,pkt_nsec):
+# tv_sec is the linux time, pkt_tai and pkt_nsec is from WR
+def _caldate(tv_sec,pkt_tai,pkt_nsec):
     lo_t = datetime.datetime.fromtimestamp(tv_sec).strftime('%Y-%m-%d %H:%M:%S')
-    sec = (tv_sec & 0xFFFFFFFFFFFFFC00) + pkt_utc
+    sec = (tv_sec & 0xFFFFFFFFFFFFFC00) + pkt_tai
     wr_t = datetime.datetime.fromtimestamp(sec).strftime('%Y-%m-%d %H:%M:%S')
     #print('Linux time: ', lo_t)
     #print('WR time   : ', wr_t)
@@ -49,14 +49,18 @@ class PFFfile(object):
             self.image_size = 32
             self.bytes_per_pixel = 2
             self.is_ph = False
-        elif self.dp == 'ph16' or self.dp =='3':
-            self.image_size = 16
-            self.bytes_per_pixel = 2
-            self.is_ph = True
         elif self.dp == 'img8' or self.dp == '2':
             self.image_size = 32
             self.bytes_per_pixel = 1
             self.is_ph =False
+        elif self.dp == 'ph256' or self.dp == 'ph16' or self.dp =='3':
+            self.image_size = 16
+            self.bytes_per_pixel = 2
+            self.is_ph = True
+        elif self.dp == 'ph1024':
+            self.image_size = 32
+            self.bytes_per_pixel = 2
+            self.is_ph = True
         else:
             raise Exception("bad data product %s"%self.dp)
         self.fhandle = 0
@@ -76,7 +80,7 @@ class PFFfile(object):
         self.metadata = []
         self.data = []
         # reading data from im and ph file is different
-        if(self.is_ph==False):
+        if(self.is_ph==False or self.image_size==32):
             try:
                 metadata = pff.read_json(self.fhandle)
                 self.metadata = json.loads(metadata)
@@ -92,6 +96,7 @@ class PFFfile(object):
                 metadata = pff.read_json(self.fhandle)
                 self.metadata = json.loads(metadata)
                 rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+                #print(rawdata)
                 tmp = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
                 tmp = np.transpose(tmp)
                 quabo_id = self.metadata['quabo_num']
@@ -189,40 +194,77 @@ class MainWindow(uiclass, baseclass):
         if(self.pff.is_ph==False):
             for i in range(0,4):
                 quabo = 'quabo_' + str(i)
-                for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
+                for metadata in ['acq_mode','mod_num','pkt_num','pkt_tai','pkt_nsec']:
                     var = 'Q' + str(i) + '_' + metadata
+                    if(metadata == 'pkt_tai'):
+                        try:
+                            self.__dict__[var].setText(str(self.pff.metadata[quabo]['pkt_tai']))
+                        except:
+                            self.__dict__[var].setText(str(self.pff.metadata[quabo]['pkt_utc']))
+                        continue
                     self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
                 tv_sec = self.pff.metadata[quabo]['tv_sec'] + 37
-                pkt_utc = self.pff.metadata[quabo]['pkt_utc']
+                pkt_tai = self.pff.metadata[quabo]['pkt_tai']
                 pkt_nsec = self.pff.metadata[quabo]['pkt_nsec']
                 if(tv_sec != 0):
-                    [lo_t, wr_t] = _caldate(tv_sec, pkt_utc, pkt_nsec)
+                    [lo_t, wr_t] = _caldate(tv_sec, pkt_tai, pkt_nsec)
                     var = var = 'Q' + str(i) + '_' + 'lo_time'
                     self.__dict__[var].setText(lo_t.split(' ')[1])
                     var = var = 'Q' + str(i) + '_' + 'wr_time'
                     self.__dict__[var].setText(wr_t.split(' ')[1])
                     # lo_t.split(' ')[0] is the date, which should be the same as wr_t.split(' ')[0]
                     self.Q_date.setText(lo_t.split(' ')[0])
-        else:
+        elif(self.pff.image_size == 16):
             quabo_id = self.pff.metadata['quabo_num']
             group_id = 'Quabo'+str(quabo_id)+'metadata'
             self.__dict__[group_id].setStyleSheet('QGroupBox:title {color: rgb(255, 0, 255);}')
             quabo = 'quabo_' + str(quabo_id)
-            for metadata in ['acq_mode','mod_num','pkt_num','pkt_utc','pkt_nsec']:
+            for metadata in ['pkt_num','pkt_tai','pkt_nsec']:
                     var = 'Q' + str(quabo_id) + '_' + metadata
+                    if(metadata == 'pkt_tai'):
+                        try:
+                            self.__dict__[var].setText(str(self.pff.metadata['pkt_tai']))
+                        except:
+                            self.__dict__[var].setText(str(self.pff.metadata['pkt_utc']))
+                        continue
                     self.__dict__[var].setText(str(self.pff.metadata[metadata]))
             tv_sec = self.pff.metadata['tv_sec'] + 37
-            pkt_utc = self.pff.metadata['pkt_utc']
+            try:
+                pkt_tai = self.pff.metadata['pkt_tai']
+            except:
+                pkt_tai = self.pff.metadata['pkt_utc']
             pkt_nsec = self.pff.metadata['pkt_nsec']
             if(tv_sec != 0):
-                    [lo_t, wr_t] = _caldate(tv_sec, pkt_utc, pkt_nsec)
+                    [lo_t, wr_t] = _caldate(tv_sec, pkt_tai, pkt_nsec)
                     var = var = 'Q' + str(quabo_id) + '_' + 'lo_time'
                     self.__dict__[var].setText(lo_t.split(' ')[1])
                     var = var = 'Q' + str(quabo_id) + '_' + 'wr_time'
                     self.__dict__[var].setText(wr_t.split(' ')[1])
                     # lo_t.split(' ')[0] is the date, which should be the same as wr_t.split(' ')[0]
                     self.Q_date.setText(lo_t.split(' ')[0])
-    
+        elif(self.pff.image_size == 32):
+            for i in range(0,4):
+                quabo = 'quabo_' + str(i)
+                for metadata in ['pkt_num','pkt_tai','pkt_nsec']:
+                    var = 'Q' + str(i) + '_' + metadata
+                    if(metadata == 'pkt_tai'):
+                        try:
+                            self.__dict__[var].setText(str(self.pff.metadata[quabo]['pkt_tai']))
+                        except:
+                            self.__dict__[var].setText(str(self.pff.metadata[quabo]['pkt_utc']))
+                        continue
+                    self.__dict__[var].setText(str(self.pff.metadata[quabo][metadata]))
+                tv_sec = self.pff.metadata[quabo]['tv_sec'] + 37
+                pkt_tai = self.pff.metadata[quabo]['pkt_tai']
+                pkt_nsec = self.pff.metadata[quabo]['pkt_nsec']
+                if(tv_sec != 0):
+                    [lo_t, wr_t] = _caldate(tv_sec, pkt_tai, pkt_nsec)
+                    var = var = 'Q' + str(i) + '_' + 'lo_time'
+                    self.__dict__[var].setText(lo_t.split(' ')[1])
+                    var = var = 'Q' + str(i) + '_' + 'wr_time'
+                    self.__dict__[var].setText(wr_t.split(' ')[1])
+                    # lo_t.split(' ')[0] is the date, which should be the same as wr_t.split(' ')[0]
+                    self.Q_date.setText(lo_t.split(' ')[0])
     def openfile(self):
         directory = QtWidgets.QFileDialog.getOpenFileName(self,  "Select","./", "All Files (*);;Text Files (*.pff)") 
         self.filename = directory[0]
