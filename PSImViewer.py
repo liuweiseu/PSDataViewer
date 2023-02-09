@@ -85,6 +85,8 @@ class PFFfile(object):
                 metadata = pff.read_json(self.fhandle)
                 self.metadata = json.loads(metadata)
                 rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+                if(self.is_ph == True):
+                    rawdata = np.asarray(rawdata, dtype=np.int16)
                 pktsize = len(metadata) + len(rawdata)*self.bytes_per_pixel + 2
                 self.pktsize.append(pktsize)
                 self.data = np.array(rawdata,dtype=float).reshape(self.image_size,self.image_size)
@@ -120,6 +122,8 @@ class PFFfile(object):
             metadata = pff.read_json(self.fhandle)
             self.metadata = json.loads(metadata)
             rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+            if(self.is_ph == True):
+                    rawdata = np.asarray(rawdata, dtype=np.int16)
             self.data = np.array(rawdata,dtype=float).reshape(self.image_size, self.image_size)
             self.data = np.transpose(self.data)
         else:
