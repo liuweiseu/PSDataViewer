@@ -132,6 +132,8 @@ class PFFfile(object):
             metadata = pff.read_json(self.fhandle)
             self.metadata = json.loads(metadata)
             rawdata = pff.read_image(self.fhandle, self.image_size, self.bytes_per_pixel)
+            if(self.is_ph == True):
+                    rawdata = np.asarray(rawdata, dtype=np.int16)
             tmp = np.array(rawdata,dtype=float).reshape(16,16)
             tmp = np.transpose(tmp)
             quabo_id = self.metadata['quabo_num']
